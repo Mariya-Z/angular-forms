@@ -17,6 +17,9 @@ export class SignupReactiveFormComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
+    // this.setFormValues();
+    this.patchFormValues();
+
   }
 
   private createForm() {
@@ -27,6 +30,23 @@ export class SignupReactiveFormComponent implements OnInit {
       sendProducts: new FormControl(true)
     });
   }
+
+  private setFormValues() {
+    this.userForm.setValue({
+      firstName: 'Vitaliy',
+      lastName: 'Zhyrytskyy',
+      email: 'vitaliy_zhyrytskyy@ukr.net',
+      sendProducts: false
+    });
+  }
+
+  private patchFormValues() {
+    this.userForm.patchValue({
+      firstName: 'Vitaliy',
+      lastName: 'Zhyrytskyy'
+    });
+  }
+
 
   onSave() {
     // Form model

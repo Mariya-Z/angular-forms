@@ -11,6 +11,7 @@ import { User } from './../../models/user';
 import { CustomValidators } from '../../validators';
 
 import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-signup-reactive-form',
@@ -150,9 +151,9 @@ export class SignupReactiveFormComponent implements OnInit, OnDestroy {
       .get('notification')
       .valueChanges.subscribe(value => this.setNotification(value));
     const emailControl = this.userForm.get('emailGroup.email');
-    const sub = emailControl.valueChanges.subscribe(value =>
-      this.setValidationMessage(emailControl, 'email'),
-    );
+    const sub = emailControl.valueChanges
+      .pipe(debounceTime(1000))
+      .subscribe(value => this.setValidationMessage(emailControl, 'email'));
     this.sub.add(sub);
   }
 

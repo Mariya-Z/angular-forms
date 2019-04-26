@@ -85,46 +85,81 @@
         </div>
 
         <div
-          class="form-group"
-          [ngClass]="{
-            'has-error':
-              (userForm.get('email').touched || userForm.get('email').dirty) &&
-              userForm.get('email').invalid
-          }"
+          formGroupName="emailGroup"
+          [ngClass]="{ 'has-error': userForm.get('emailGroup').errors }"
         >
-          <label class="col-md-2 control-label" for="emailId">Email</label>
+          <div
+            class="form-group"
+            [ngClass]="{ 'has-error': validationMessage }"
+          >
+            <label class="col-md-2 control-label" for="emailId">Email</label>
 
-          <div class="col-md-8">
-            <input
-              class="form-control"
-              id="emailId"
-              type="email"
-              placeholder="{{ placeholder.email }}"
-              formControlName="email"
-              appAsyncEmailValidator
-            />
-            <span *ngIf="userForm.get('email').hasError('asyncEmailInvalid')">
-              This email already exists. Please enter other email address.
-            </span>
+            <div class="col-md-8">
+              <input
+                class="form-control"
+                id="emailId"
+                type="email"
+                placeholder="{{ placeholder.email }}"
+                formControlName="email"
+                appAsyncEmailValidator
+                (blur)="onBlur()"
+              />
+              <span
+                *ngIf="
+                  userForm.get('emailGroup.email').hasError('asyncEmailInvalid')
+                "
+              >
+                This email already exists. Please enter other email address.
+              </span>
 
-            <span
-              class="help-block"
-              *ngIf="
-                (userForm.get('email').touched ||
-                  userForm.get('email').dirty) &&
-                userForm.get('email').errors
-              "
+              <span class="help-block" *ngIf="validationMessage">
+                {{ validationMessage }}
+              </span>
+            </div>
+          </div>
+
+          <div
+            class="form-group"
+            [ngClass]="{
+              'has-error':
+                (userForm.get('emailGroup.confirmEmail').touched ||
+                  userForm.get('emailGroup.confirmEmail').dirty) &&
+                userForm.get('emailGroup.confirmEmail').invalid
+            }"
+          >
+            <label class="col-md-2 control-label" for="confirmEmailId"
+              >Confirm Email</label
             >
-              <span *ngIf="userForm.get('email').hasError('required')">
-                Please enter your email address.
+
+            <div class="col-md-8">
+              <input
+                class="form-control"
+                id="confirmEmailId"
+                type="email"
+                placeholder="{{ placeholder.confirmEmail }}"
+                formControlName="confirmEmail"
+              />
+              <span
+                class="help-block"
+                *ngIf="
+                  (userForm.get('emailGroup.confirmEmail').touched ||
+                    userForm.get('emailGroup.confirmEmail').dirty) &&
+                  (userForm.get('emailGroup.confirmEmail').errors ||
+                    userForm.get('emailGroup').errors)
+                "
+              >
+                <span
+                  *ngIf="
+                    userForm.get('emailGroup.confirmEmail').hasError('required')
+                  "
+                >
+                  Please confirm your email address.
+                </span>
+                <span *ngIf="userForm.get('emailGroup').hasError('emailMatch')">
+                  The confirmation does not match the email address.
+                </span>
               </span>
-              <span *ngIf="userForm.get('email').hasError('pattern')">
-                Please enter a valid email address.
-              </span>
-              <span *ngIf="userForm.get('email').hasError('email')">
-                Please enter a valid email address.
-              </span>
-            </span>
+            </div>
           </div>
         </div>
 
@@ -158,7 +193,6 @@
                 type="radio"
                 value="email"
                 formControlName="notification"
-                (click)="onSetNotification('email')"
               />Email
             </label>
             <label class="radio-online">
@@ -166,7 +200,6 @@
                 type="radio"
                 value="text"
                 formControlName="notification"
-                (click)="onSetNotification('text')"
               />Text
             </label>
           </div>

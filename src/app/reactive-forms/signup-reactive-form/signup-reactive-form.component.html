@@ -89,7 +89,7 @@
           [ngClass]="{
             'has-error':
               (userForm.get('email').touched || userForm.get('email').dirty) &&
-              !userForm.get('email').valid
+              userForm.get('email').invalid
           }"
         >
           <label class="col-md-2 control-label" for="emailId">Email</label>
@@ -101,7 +101,12 @@
               type="email"
               placeholder="{{ placeholder.email }}"
               formControlName="email"
+              appAsyncEmailValidator
             />
+            <span *ngIf="userForm.get('email').hasError('asyncEmailInvalid')">
+              This email already exists. Please enter other email address.
+            </span>
+
             <span
               class="help-block"
               *ngIf="
@@ -186,6 +191,10 @@
               id="serviceLevelId"
               type="number"
               formControlName="serviceLevel"
+              appServiceLevelValidator
+              rMin="1"
+              rMax="4"
+              #serviceLevelVar
             />
             <span
               class="help-block"
@@ -198,7 +207,9 @@
               <span
                 *ngIf="userForm.get('serviceLevel').hasError('serviceLevel')"
               >
-                Please enter correct number from 1 to 3.
+                Please enter correct number from
+                {{ serviceLevelVar.getAttribute('rMin') || 1 }} to
+                {{ serviceLevelVar.getAttribute('rMax') || 3 }}.
               </span>
             </span>
           </div>

@@ -167,6 +167,43 @@
           </div>
         </div>
 
+        <div
+          class="form-group"
+          [ngClass]="{
+            'has-error':
+              (userForm.get('serviceLevel').touched ||
+                userForm.get('serviceLevel').dirty) &&
+              !userForm.get('serviceLevel').valid
+          }"
+        >
+          <label class="col-md-2 control-label" for="serviceLevelId"
+            >Service Level</label
+          >
+
+          <div class="col-md-8">
+            <input
+              class="form-control"
+              id="serviceLevelId"
+              type="number"
+              formControlName="serviceLevel"
+            />
+            <span
+              class="help-block"
+              *ngIf="
+                (userForm.get('serviceLevel').touched ||
+                  userForm.get('serviceLevel').dirty) &&
+                userForm.get('serviceLevel').errors
+              "
+            >
+              <span
+                *ngIf="userForm.get('serviceLevel').hasError('serviceLevel')"
+              >
+                Please enter correct number from 1 to 3.
+              </span>
+            </span>
+          </div>
+        </div>
+
         <div class="form-group">
           <div class="col-md-offset-1 col-md-8 checkbox">
             <label>

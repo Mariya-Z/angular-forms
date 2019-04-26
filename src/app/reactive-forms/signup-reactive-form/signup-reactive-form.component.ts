@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 
 import { User } from './../../models/user';
+import { CustomValidators } from '../../validators';
 
 @Component({
   selector: 'app-signup-reactive-form',
@@ -42,9 +43,17 @@ export class SignupReactiveFormComponent implements OnInit {
 
   private buildForm() {
     this.userForm = this.fb.group({
-      // firstName: '',
-      firstName: ['', [Validators.required, Validators.minLength(3)]],
-      // lastName: { value: 'Zhyrytskyy', disabled: true },
+      // It works!
+      // firstName: new FormControl('', {
+      //   validators: [Validators.required, Validators.minLength(3)],
+      //   updateOn: 'blur',
+      // }),
+      // It works since v7
+      firstName: this.fb.control('', {
+        validators: [Validators.required, Validators.minLength(3)],
+        updateOn: 'blur',
+      }),
+
       lastName: [
         { value: 'Zhyrytskyy', disabled: false },
         [Validators.required, Validators.maxLength(50)],
@@ -60,15 +69,25 @@ export class SignupReactiveFormComponent implements OnInit {
       ],
       phone: '',
       notification: 'email',
+      serviceLevel: ['', CustomValidators.serviceLevelRange(1, 3)],
       sendProducts: true,
     });
   }
 
   private createForm() {
     this.userForm = new FormGroup({
-      firstName: new FormControl(),
+      firstName: new FormControl('', {
+        validators: [Validators.required, Validators.minLength(3)],
+        updateOn: 'blur',
+      }),
       lastName: new FormControl(),
       email: new FormControl(),
+      phone: new FormControl(),
+      notification: new FormControl('email'),
+      serviceLevel: new FormControl('', {
+        validators: [CustomValidators.serviceLevel],
+        updateOn: 'blur',
+      }),
       sendProducts: new FormControl(true),
     });
   }

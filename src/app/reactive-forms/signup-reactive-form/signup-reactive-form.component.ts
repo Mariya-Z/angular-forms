@@ -3,6 +3,7 @@ import {
   FormBuilder,
   FormGroup,
   FormControl,
+  FormArray,
   Validators,
   AbstractControl,
 } from '@angular/forms';
@@ -40,7 +41,21 @@ export class SignupReactiveFormComponent implements OnInit, OnDestroy {
 
   private sub: Subscription;
 
+  private validationMessagesMap = {
+    email: {
+      required: 'Please enter your email address.',
+      pattern: 'Please enter a valid email address.',
+      email: 'Please enter a valid email address.',
+      asyncEmailInvalid:
+        'This email already exists. Please enter other email address.',
+    },
+  };
+
   constructor(private fb: FormBuilder) {}
+
+  get addresses(): FormArray {
+    return <FormArray>this.userForm.get('addresses');
+  }
 
   ngOnInit() {
     // this.createForm();
@@ -54,15 +69,10 @@ export class SignupReactiveFormComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  private validationMessagesMap = {
-    email: {
-      required: 'Please enter your email address.',
-      pattern: 'Please enter a valid email address.',
-      email: 'Please enter a valid email address.',
-      asyncEmailInvalid:
-        'This email already exists. Please enter other email address.',
-    },
-  };
+  onAddAddress(): void {
+    this.addresses.push(this.buildAddress());
+  }
+
 
   private setValidationMessage(c: AbstractControl, controlName: string) {
     this.validationMessage = '';
@@ -109,6 +119,18 @@ export class SignupReactiveFormComponent implements OnInit, OnDestroy {
       notification: 'email',
       serviceLevel: [''],
       sendProducts: true,
+      addresses: this.fb.array([this.buildAddress()]),
+    });
+  }
+
+  private buildAddress(): FormGroup {
+    return this.fb.group({
+      addressType: 'home',
+      country: '',
+      city: '',
+      zip: '',
+      street1: '',
+      street2: '',
     });
   }
 
